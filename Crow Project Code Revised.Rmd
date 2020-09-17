@@ -188,12 +188,12 @@ c(rossmoor_density - (1.96 * rossmoor_density_se), rossmoor_density + (1.96 * ro
 
 #Comparison of the Two Groups
 
-###Null Hypothesis: The density of crows in Lucerne Valley, California, is less than or equal to the density of crows in Rossmoor, California.
-###Alternative Hypothesis: The density of crows in ZLucerne Valleu, California, is larger than the density of crows in Rossmoor, California.
+###Null Hypothesis: The density of crows in Rossmoor, California, is less than or equal to the density of crows in Lucerne Valley, California.
+###Alternative Hypothesis: The density of crows in Rossmoor, California, is larger than the density of crows in Lucerne Valley, California.
 
 ```{r}
 #Test Statistic for the Difference in Densities
-difference <- lucerne_density - rossmoor_density
+difference <- rossmoor_density - lucerne_density
 
 variance_of_difference <- (rossmoor_density_sample_var / nR) + (lucerne_density_sample_var / nL)
 
@@ -202,7 +202,7 @@ test_stat <- difference / sqrt(variance_of_difference)
 
 ```{r}
 #P-value for the Calculated Test Statistic
-p_value <- pt(-abs(test_stat), df = 14)
+p_value <- pt(test_stat, df = 14, lower.tail = FALSE)
 p_value
 ```
 
