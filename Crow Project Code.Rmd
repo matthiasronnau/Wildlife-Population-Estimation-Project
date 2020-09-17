@@ -1,0 +1,224 @@
+---
+title: "Variations in American Crow Densities"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(stringr)
+```
+
+###Selecting the PSUs for Rossmoor
+```{r}
+set.seed(152)
+rossmoor_samp <- sample(1:220, 15, replace = FALSE)
+rossmoor_samp
+```
+
+###Selecting PSUs for Lucerne Valley
+```{r}
+set.seed(114)
+lucerne_samp <- sample(1:216, 15, replace = FALSE)
+lucerne_samp
+```
+
+#Load the Data
+```{r}
+crow <- read.csv("crowdata.csv")
+```
+
+```{r, include= FALSE}
+head(crow)
+names(crow)[names(crow) == "ï..Grid"] = "Grid"
+```
+
+```{r}
+head(crow)
+```
+
+```{r}
+crow$Length <- crow$Length * 1609.34
+crow$Width <- crow$Width * 1609.34
+```
+
+#Analysis for Lucerne Valley
+##Total Estimates
+```{r}
+lucerne <- crow[str_detect(crow$Grid, "LV"), ]
+head(lucerne)
+```
+
+```{r}
+#Estimate of the Total Crows in Lucerne Valley
+NL <- 220
+nL <- 15
+lucerne_total <- (NL / nL) * sum(lucerne$Crows)
+lucerne_total
+```
+
+```{r}
+#Variance of Total Crow Estimate in Lucerne Valley
+lucerne_sample_var <- (1 / (nL - 1)) * sum((lucerne$Crows - (lucerne_total / NL)) ** 2)
+lucerne_var <- (NL ** 2) * (1 - (nL / NL)) * lucerne_sample_var / nL
+
+lucerne_var
+```
+
+```{r}
+#Standard Error of Total Crow Estimate in Lucerne Valley
+lucerne_se <- sqrt(lucerne_var)
+lucerne_se
+```
+
+```{r}
+#Standard Deviation of Total Crow Estimate in Lucerne Valley
+lucerne_sd <- lucerne_se * sqrt(nrow(lucerne))
+lucerne_sd
+```
+
+```{r}
+#95% Confidence Interval for Total Crows in Lucerne Valley
+c(lucerne_total - (1.96 * lucerne_se), lucerne_total + (1.96 * lucerne_se))
+```
+
+##Density Estimates
+```{r}
+#Estimate of Crow Density in Lucerne Valley
+lucerne_density <- lucerne_total / 4.25
+lucerne_density
+```
+
+```{r}
+#Variance of Crow Density in Lucerne Valley
+lucerne_density_sample_var <- (1 / (nL - 1)) * sum((lucerne$Crows - (lucerne_total / NL)) ** 2) * (1 / (4.25 ** 2))
+lucerne_density_var <- (NL ** 2) * (1 - (nL / NL)) * lucerne_density_sample_var / nL
+
+lucerne_density_var
+```
+
+```{r}
+#Standard Error of Crow Density in Lucerne Valley
+lucerne_density_se <- sqrt(lucerne_density_var)
+lucerne_density_se
+```
+
+```{r}
+#Standard Deviation of Crow Density in Lucerne Valley
+lucerne_density_sd <- lucerne_density_se * sqrt(nrow(lucerne))
+lucerne_density_sd
+```
+
+```{r}
+#95% Confidence Interval for Total Crow Density in Lucerne Valley
+c(lucerne_density - (1.96 * lucerne_density_se), lucerne_density + (1.96 * lucerne_density_se))
+```
+
+#Anaylsis for Rossmoor, California
+##Total Estimates
+```{r}
+rossmoor <- crow[str_detect(crow$Grid, "R"), ]
+head(rossmoor)
+```
+
+```{r}
+#Estimate of the Total Crows in Rossmoor
+NR <- 216
+nR <- 15
+rossmoor_total <- (NL / nL) * sum(rossmoor$Crows)
+rossmoor_total
+```
+
+```{r}
+#Variance of Total Crow Estimate in Rossmoor
+rossmoor_sample_var <- (1 / (nR - 1)) * sum((rossmoor$Crows - (rossmoor_total / NR)) ** 2)
+rossmoor_var <- (NR ** 2) * (1 - (nR / NR)) * rossmoor_sample_var / nR
+
+rossmoor_var
+```
+
+```{r}
+#Standard Error of Total Crow Estimate in Rossmoor
+rossmoor_se <- sqrt(rossmoor_var)
+rossmoor_se
+```
+
+```{r}
+#Standard Deviation of Total Crow Estimate in Rossmoor
+rossmoor_sd <- rossmoor_se * sqrt(nrow(rossmoor))
+rossmoor_sd
+```
+
+```{r}
+#95% Confidence Interval for Total Crows in Rossmoor
+c(rossmoor_total - (1.96 * rossmoor_se), rossmoor_total + (1.96 * rossmoor_se))
+```
+
+##Denisty Estimates
+```{r}
+#Estimate of Crow Density in Rossmoor
+rossmoor_density <- rossmoor_total / 4.25
+rossmoor_density
+```
+
+```{r}
+#Variance of Crow Density in Rossmoor
+rossmoor_density_sample_var <- (1 / (nR - 1)) * sum((rossmoor$Crows - (rossmoor_total / NR)) ** 2) * (1 / (4.25 ** 2))
+rossmoor_density_var <- (NR ** 2) * (1 - (nR / NR)) * rossmoor_density_sample_var / nR
+
+rossmoor_density_var
+```
+
+```{r}
+#Standard Error of Crow Density in Rossmoor
+rossmoor_density_se <- sqrt(rossmoor_density_var)
+rossmoor_density_se
+```
+
+```{r}
+#Standard Deviation of Crow Density in Rossmoor
+rossmoor_density_sd <- rossmoor_density_se * sqrt(nrow(rossmoor))
+rossmoor_density_sd
+```
+
+```{r}
+#95% Confidence Interval for Total Crow Density in Rossmoor
+c(rossmoor_density - (1.96 * rossmoor_density_se), rossmoor_density + (1.96 * rossmoor_density_se))
+```
+
+#Comparison of the Two Groups
+
+###Null Hypothesis: The density of crows in Lucerne Valley, California, is equal to the density of crows in Rossmoor, California.
+###Alternative Hypothesis: The density of crows in Rossmoor, California, is larger than the density of crows in Lucerne Valley, California.
+
+```{r}
+#Test Statistic for the Difference in Densities
+difference <- rossmoor_density - lucerne_density
+
+variance_of_difference <- (rossmoor_density_sample_var / nR) + (lucerne_density_sample_var / nL)
+
+test_stat <- difference / sqrt(variance_of_difference)
+```
+
+```{r}
+#P-value for the Calculated Test Statistic
+p_value <- pt(-abs(test_stat), df = 14, lower.tail =  FALSE)
+p_value
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
