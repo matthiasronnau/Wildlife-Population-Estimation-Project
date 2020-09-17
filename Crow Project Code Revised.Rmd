@@ -9,10 +9,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
-library(stringr)
-```
-
 ###Selecting the PSUs for Rossmoor
 ```{r}
 set.seed(152)
